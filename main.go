@@ -81,7 +81,8 @@ func compete(iter model.Iterator) error {
 
 	t0 := time.Now()
 	sol, err := solve.FromNodes(
-		iter.GetSize(),
+		iter.GetWidth(),
+		iter.GetHeight(),
 		ns,
 	)
 	defer func(dur time.Duration) {
@@ -115,7 +116,8 @@ func runPuzzleID(
 
 	t0 := time.Now()
 	sol, err := solve.FromNodes(
-		iter.GetSize(),
+		iter.GetWidth(),
+		iter.GetHeight(),
 		ns,
 	)
 	defer func(dur time.Duration) {

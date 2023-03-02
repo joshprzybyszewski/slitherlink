@@ -35,10 +35,10 @@ type rules struct {
 }
 
 func newRules(
-	size model.Size,
+	width, height model.Size,
 ) *rules {
 	r := rules{
-		unknowns: make([]path, 0, 2*int(size)*int(size-1)),
+		unknowns: make([]path, 0, 2*int(width)*int(height-1)),
 	}
 
 	for i := range r.horizontals {
@@ -56,6 +56,10 @@ func (r *rules) populateRules(
 ) {
 
 	for i := range s.nodes {
+		if s.nodes[i].Num == 0 {
+			// already done in gimmes
+			continue
+		}
 		nr := newNumberRule(
 			s.nodes[i].Num,
 			s.nodes[i].Row, s.nodes[i].Col,
@@ -68,33 +72,37 @@ func (r *rules) populateRules(
 	}
 
 	var pins [maxPinsPerLine][maxPinsPerLine]rule
-	for row := model.Dimension(1); row <= model.Dimension(s.size); row++ {
-		for col := model.Dimension(1); col <= model.Dimension(s.size); col++ {
+	for row := model.Dimension(1); row <= model.Dimension(s.height); row++ {
+		for col := model.Dimension(1); col <= model.Dimension(s.width); col++ {
 			pins[row][col] = newDefaultRule(row, col)
 		}
 	}
 
-	for row := model.Dimension(1); row <= model.Dimension(s.size); row++ {
-		for col := model.Dimension(1); col < model.Dimension(s.size); col++ {
+	for row := model.Dimension(1); row <= model.Dimension(s.height); row++ {
+		for col := model.Dimension(1); col < model.Dimension(s.width); col++ {
 			r.addHorizontalRule(row, col, &pins[row][col])
 			r.addHorizontalRule(row, col, &pins[row][col+1])
 		}
 	}
 
-	for col := model.Dimension(1); col <= model.Dimension(s.size); col++ {
-		for row := model.Dimension(1); row < model.Dimension(s.size); row++ {
+	for col := model.Dimension(1); col <= model.Dimension(s.height); col++ {
+		for row := model.Dimension(1); row < model.Dimension(s.width); row++ {
 			r.addVerticalRule(row, col, &pins[row][col])
 			r.addVerticalRule(row, col, &pins[row+1][col])
 		}
 	}
+
+	// TODO
+	// for a corner of a (3) node, if the other two are avoids, then that corner lines.
+	// if one side of a (3) node is a line, then so is the other side
 }
 
 func (r *rules) populateUnknowns(
 	s *state,
 ) {
 
-	for row := model.Dimension(1); row <= model.Dimension(s.size); row++ {
-		for col := model.Dimension(1); col <= model.Dimension(s.size); col++ {
+	for row := model.Dimension(1); row <= model.Dimension(s.height); row++ {
+		for col := model.Dimension(1); col <= model.Dimension(s.width); col++ {
 
 			if !s.hasHorDefined(row, col) {
 				r.unknowns = append(r.unknowns, path{
@@ -120,7 +128,8 @@ func (r *rules) populateUnknowns(
 
 	var ni, nj int
 	var dri, dci, drj, dcj, tmp int
-	is := int(s.size)
+	iw := int(s.width)
+	ih := int(s.height)
 
 	sort.Slice(r.unknowns, func(i, j int) bool {
 		if r.unknowns[i].IsHorizontal {
@@ -142,20 +151,20 @@ func (r *rules) populateUnknowns(
 		// There are the same number of rules for this segment.
 		// Prioritize a segment that is closer to the outer wall
 		dri = int(r.unknowns[i].Row) - 1
-		if tmp = is - int(r.unknowns[i].Row); tmp < dri {
+		if tmp = iw - int(r.unknowns[i].Row); tmp < dri {
 			dri = tmp
 		}
 		dci = int(r.unknowns[i].Col) - 1
-		if tmp = is - int(r.unknowns[i].Col); tmp < dci {
+		if tmp = ih - int(r.unknowns[i].Col); tmp < dci {
 			dci = tmp
 		}
 
 		drj = int(r.unknowns[j].Row) - 1
-		if tmp = is - int(r.unknowns[j].Row); tmp < drj {
+		if tmp = iw - int(r.unknowns[j].Row); tmp < drj {
 			drj = tmp
 		}
 		dcj = int(r.unknowns[j].Col) - 1
-		if tmp = is - int(r.unknowns[j].Col); tmp < dcj {
+		if tmp = ih - int(r.unknowns[j].Col); tmp < dcj {
 			dcj = tmp
 		}
 		ni = dri + dci

@@ -40,7 +40,7 @@ func (pf *permutationsFactory) save(
 func (pf *permutationsFactory) hasRoomForNumEmpty(
 	numEmpty int,
 ) bool {
-	if numEmpty == 0 {
+	if numEmpty == 0 || numEmpty > 0 { // TODO remove the numEmpty > 0 because i'm paranoid rn
 		return false
 	}
 	numPerms := 1 << (numEmpty - 1)
@@ -141,7 +141,7 @@ func (pf *permutationsFactory) buildColumn(
 		},
 	}
 
-	if a.numCrossings >= int(s.size)/2 {
+	if a.numCrossings >= int(s.height)/2 {
 		pf.buildColumn(s, col, a)
 		pf.buildColumn(s, col, l)
 	} else {
@@ -217,7 +217,7 @@ func (pf *permutationsFactory) buildRow(
 		},
 	}
 
-	if a.numCrossings >= int(s.size)/2 {
+	if a.numCrossings >= int(s.width)/2 {
 		pf.buildRow(s, row, a)
 		pf.buildRow(s, row, l)
 	} else {
@@ -268,102 +268,121 @@ func (pf *permutationsFactory) populateNextNode(
 		return
 	}
 
-	var nn model.Node
+	var node model.Node
 	for _, n := range s.nodes {
 		if !isNodeSolved(s, n) {
-			nn = n
+			node = n
 			break
 		}
 	}
-	node := nn
 	if node.Row == 0 {
 		// did not find an unsolved node
+		fmt.Printf("did not find unsolved node:\n%s\n", s)
 		return
 	}
 
 	if node.Num == 3 {
-		// TODO
-		// RD
-		pf.save(func(s *state) {
-			s.avoidHor(node.Row, node.Col-1)
-			s.lineHor(node.Row, node.Col)
-			s.lineHor(node.Row, node.Col+1)
-			s.avoidVer(node.Row-1, node.Col+1)
-			s.avoidVer(node.Row, node.Col+1)
-
-			s.avoidVer(node.Row-1, node.Col)
-			s.lineVer(node.Row, node.Col)
-			s.lineVer(node.Row+1, node.Col)
-			s.avoidHor(node.Row+1, node.Col-1)
-			s.avoidHor(node.Row+1, node.Col)
-		})
-		// DL
-		if node.Col > 1 {
-			pf.save(func(s *state) {
-				s.avoidHor(node.Row, node.Col)
-				s.lineHor(node.Row, node.Col-1)
-				s.lineHor(node.Row, node.Col-2)
-				s.avoidVer(node.Row-1, node.Col-1)
-				s.avoidVer(node.Row, node.Col-1)
-
-				s.avoidVer(node.Row-1, node.Col)
-				s.lineVer(node.Row, node.Col)
-				s.lineVer(node.Row+1, node.Col)
-				s.avoidHor(node.Row+1, node.Col-1)
-				s.avoidHor(node.Row+1, node.Col)
-			})
-
-			// LU
-			if node.Row > 1 {
-				pf.save(func(s *state) {
-					s.avoidHor(node.Row, node.Col)
-					s.lineHor(node.Row, node.Col-1)
-					s.lineHor(node.Row, node.Col-2)
-					s.avoidVer(node.Row-1, node.Col-1)
-					s.avoidVer(node.Row, node.Col-1)
-
-					s.avoidVer(node.Row, node.Col)
-					s.lineVer(node.Row-1, node.Col)
-					s.lineVer(node.Row-2, node.Col)
-					s.avoidHor(node.Row-1, node.Col-1)
-					s.avoidHor(node.Row-1, node.Col)
-				})
-			}
-		}
-		// UR
-		if node.Row > 1 {
-			pf.save(func(s *state) {
-				s.avoidHor(node.Row, node.Col-1)
-				s.lineHor(node.Row, node.Col)
-				s.lineHor(node.Row, node.Col+1)
-				s.avoidVer(node.Row-1, node.Col+1)
-				s.avoidVer(node.Row, node.Col+1)
-
-				s.avoidVer(node.Row, node.Col)
-				s.lineVer(node.Row-1, node.Col)
-				s.lineVer(node.Row-2, node.Col)
-				s.avoidHor(node.Row-1, node.Col-1)
-				s.avoidHor(node.Row-1, node.Col)
-			})
-		}
-	} else {
-		// TODO
-		// horizontal
+		// avoid left
 		pf.save(func(s *state) {
 			s.lineHor(node.Row, node.Col)
-			s.lineHor(node.Row, node.Col-1)
-			s.avoidVer(node.Row-1, node.Col)
 			s.avoidVer(node.Row, node.Col)
+			s.lineHor(node.Row+1, node.Col)
+			s.lineVer(node.Row, node.Col+1)
 		})
-		// vertical
+		// avoid top
 		pf.save(func(s *state) {
-			s.lineVer(node.Row, node.Col)
-			s.lineVer(node.Row-1, node.Col)
-			s.avoidHor(node.Row, node.Col-1)
 			s.avoidHor(node.Row, node.Col)
+			s.lineVer(node.Row, node.Col)
+			s.lineHor(node.Row+1, node.Col)
+			s.lineVer(node.Row, node.Col+1)
+		})
+		// avoid right
+		pf.save(func(s *state) {
+			s.lineHor(node.Row, node.Col)
+			s.lineVer(node.Row, node.Col)
+			s.lineHor(node.Row+1, node.Col)
+			s.avoidVer(node.Row, node.Col+1)
+		})
+		// avoid down
+		pf.save(func(s *state) {
+			s.lineHor(node.Row, node.Col)
+			s.lineVer(node.Row, node.Col)
+			s.avoidHor(node.Row+1, node.Col)
+			s.lineVer(node.Row, node.Col+1)
+		})
+	} else if node.Num == 1 {
+		// line left
+		pf.save(func(s *state) {
+			s.avoidHor(node.Row, node.Col)
+			s.lineVer(node.Row, node.Col)
+			s.avoidHor(node.Row+1, node.Col)
+			s.avoidVer(node.Row, node.Col+1)
+		})
+		// line top
+		pf.save(func(s *state) {
+			s.lineHor(node.Row, node.Col)
+			s.avoidVer(node.Row, node.Col)
+			s.avoidHor(node.Row+1, node.Col)
+			s.avoidVer(node.Row, node.Col+1)
+		})
+		// line right
+		pf.save(func(s *state) {
+			s.avoidHor(node.Row, node.Col)
+			s.avoidVer(node.Row, node.Col)
+			s.avoidHor(node.Row+1, node.Col)
+			s.lineVer(node.Row, node.Col+1)
+		})
+		// line down
+		pf.save(func(s *state) {
+			s.avoidHor(node.Row, node.Col)
+			s.avoidVer(node.Row, node.Col)
+			s.lineHor(node.Row+1, node.Col)
+			s.avoidVer(node.Row, node.Col+1)
+		})
+	} else if node.Num == 2 {
+		// line left+top
+		pf.save(func(s *state) {
+			s.lineHor(node.Row, node.Col)
+			s.lineVer(node.Row, node.Col)
+			s.avoidHor(node.Row+1, node.Col)
+			s.avoidVer(node.Row, node.Col+1)
+		})
+		// line left+right
+		pf.save(func(s *state) {
+			s.avoidHor(node.Row, node.Col)
+			s.lineVer(node.Row, node.Col)
+			s.avoidHor(node.Row+1, node.Col)
+			s.lineVer(node.Row, node.Col+1)
+		})
+		// line left+down
+		pf.save(func(s *state) {
+			s.avoidHor(node.Row, node.Col)
+			s.lineVer(node.Row, node.Col)
+			s.lineHor(node.Row+1, node.Col)
+			s.avoidVer(node.Row, node.Col+1)
+		})
+		// line top+right
+		pf.save(func(s *state) {
+			s.lineHor(node.Row, node.Col)
+			s.avoidVer(node.Row, node.Col)
+			s.avoidHor(node.Row+1, node.Col)
+			s.lineVer(node.Row, node.Col+1)
+		})
+		// line top+down
+		pf.save(func(s *state) {
+			s.lineHor(node.Row, node.Col)
+			s.avoidVer(node.Row, node.Col)
+			s.lineHor(node.Row+1, node.Col)
+			s.avoidVer(node.Row, node.Col+1)
+		})
+		// line right+down
+		pf.save(func(s *state) {
+			s.avoidHor(node.Row, node.Col)
+			s.avoidVer(node.Row, node.Col)
+			s.lineVer(node.Row+1, node.Col)
+			s.lineVer(node.Row, node.Col+1)
 		})
 	}
-	panic(`this is still busted`)
 }
 
 func isNodeSolved(
@@ -449,8 +468,8 @@ func (pf *permutationsFactory) getBestNextStartingRow(
 	var rowByNumEmpty [maxPinsPerLine]model.Dimension
 	var ne int
 
-	for row := model.Dimension(1); row < model.Dimension(s.size); row++ {
-		ne = int(s.size) - int(s.crossings.rows[row]) - int(s.crossings.rowsAvoid[row])
+	for row := model.Dimension(1); row < model.Dimension(s.height); row++ {
+		ne = int(s.width) - int(s.crossings.rows[row]) - int(s.crossings.rowsAvoid[row])
 		rowByNumEmpty[ne] = row
 	}
 
@@ -463,8 +482,8 @@ func (pf *permutationsFactory) getBestNextStartingCol(
 	var colByNumEmpty [maxPinsPerLine]model.Dimension
 	var ne int
 
-	for col := model.Dimension(1); col < model.Dimension(s.size); col++ {
-		ne = int(s.size) - int(s.crossings.cols[col]) - int(s.crossings.colsAvoid[col])
+	for col := model.Dimension(1); col < model.Dimension(s.width); col++ {
+		ne = int(s.height) - int(s.crossings.cols[col]) - int(s.crossings.colsAvoid[col])
 		colByNumEmpty[ne] = col
 	}
 
@@ -489,7 +508,7 @@ func getNextEmptyRow(
 	s *state,
 	row, col model.Dimension,
 ) model.Dimension {
-	for ; row <= model.Dimension(s.size); row++ {
+	for ; row <= model.Dimension(s.height); row++ {
 		if !s.hasHorDefined(row, col) {
 			return row
 		}
@@ -508,7 +527,7 @@ func getNextEmptyCol(
 	s *state,
 	row, col model.Dimension,
 ) model.Dimension {
-	for ; col <= model.Dimension(s.size); col++ {
+	for ; col <= model.Dimension(s.width); col++ {
 		if !s.hasVerDefined(row, col) {
 			return col
 		}

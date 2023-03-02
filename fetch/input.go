@@ -15,10 +15,11 @@ type input struct {
 }
 
 func (i input) String() string {
-	return fmt.Sprintf("Puzzle %s (Iter: %d, Size: %d, Difficulty: %s)",
+	return fmt.Sprintf("Puzzle %s (Iter: %d, Size: %d x %d, Difficulty: %s)",
 		i.ID,
 		i.iter,
-		i.iter.GetSize(),
+		i.iter.GetWidth(),
+		i.iter.GetHeight(),
 		i.iter.GetDifficulty(),
 	)
 }
@@ -29,7 +30,8 @@ func (i input) Task() string {
 
 func (i input) ToNodes() []model.Node {
 	var r, c model.Dimension
-	max := model.Dimension(i.iter.GetSize())
+	// maxR := model.Dimension(i.iter.GetHeight())
+	maxC := model.Dimension(i.iter.GetWidth())
 	output := make([]model.Node, 0, len(i.task)/2)
 
 	for _, b := range i.task {
@@ -47,9 +49,9 @@ func (i input) ToNodes() []model.Node {
 
 		c++
 
-		if c >= max {
-			r += (c / max)
-			c %= max
+		if c >= maxC {
+			r += (c / maxC)
+			c %= maxC
 		}
 	}
 

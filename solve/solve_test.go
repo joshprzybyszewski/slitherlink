@@ -21,31 +21,7 @@ func TestSpecifics(t *testing.T) {
 		iter model.Iterator
 	}{{
 		iter: 0,
-		id:   `5,734,527`,
-	}, {
-		iter: 2,
-		id:   `150,618`,
-	}, {
-		iter: 1,
-		id:   `1,527,476`,
-	}, {
-		iter: 5,
-		id:   `193,319`,
-	}, {
-		iter: 3,
-		id:   `1,817,845`,
-	}, {
-		iter: 3,
-		id:   `5,995,199`,
-	}, {
-		iter: 6,
-		id:   `7,191,910`,
-	}, {
-		iter: 8,
-		id:   `5,573,288`,
-	}, {
-		iter: 9,
-		id:   `3,118,955`,
+		id:   `7,272,378`,
 	}}
 
 	for _, tc := range testCases {
@@ -59,7 +35,8 @@ func TestSpecifics(t *testing.T) {
 
 			ns := sr.Input.ToNodes()
 			sol, err := solve.FromNodesWithTimeout(
-				tc.iter.GetSize(),
+				tc.iter.GetWidth(),
+				tc.iter.GetHeight(),
 				ns,
 				50*time.Second,
 			)
@@ -105,7 +82,8 @@ func TestAccuracy(t *testing.T) {
 				t.Run(sr.Input.ID, func(t *testing.T) {
 					ns := sr.Input.ToNodes()
 					sol, err := solve.FromNodesWithTimeout(
-						iter.GetSize(),
+						iter.GetWidth(),
+						iter.GetHeight(),
 						ns,
 						time.Duration(iter+1)*100*time.Millisecond,
 					)
@@ -153,7 +131,8 @@ func BenchmarkAll(b *testing.B) {
 					var sol model.Solution
 					for n := 0; n < b.N; n++ {
 						sol, err = solve.FromNodesWithTimeout(
-							iter.GetSize(),
+							iter.GetWidth(),
+							iter.GetHeight(),
 							sr.Input.ToNodes(),
 							time.Duration(iter+1)*100*time.Millisecond,
 						)

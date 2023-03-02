@@ -8,23 +8,23 @@ import (
 )
 
 func FromNodes(
-	size model.Size,
+	width, height model.Size,
 	ns []model.Node,
 ) (model.Solution, error) {
 	return FromNodesWithTimeout(
-		size,
+		width, height,
 		ns,
 		maxAttemptDuration,
 	)
 }
 
 func FromNodesWithTimeout(
-	size model.Size,
+	width, height model.Size,
 	ns []model.Node,
 	dur time.Duration,
 ) (model.Solution, error) {
 
-	s := newState(size, ns)
+	s := newState(width, height, ns)
 
 	ss := settle(&s)
 	if ss == solved {

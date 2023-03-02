@@ -1,6 +1,8 @@
 package solve
 
 import (
+	"fmt"
+
 	"github.com/joshprzybyszewski/slitherlink/model"
 )
 
@@ -17,6 +19,8 @@ const (
 func settle(
 	s *state,
 ) settledState {
+	fmt.Printf("settle:\n%s\n", s)
+
 	if s.hasInvalid {
 		return invalid
 	}
@@ -82,9 +86,12 @@ func settleCycle(
 
 func hasValidCrossings(s *state) bool {
 	bit := model.DimensionBit(1 << 1)
-	for i := 1; i <= int(s.size); i++ {
-		if !hasValidCrossingsForVerticalBit(s, bit) ||
-			!hasValidCrossingsForHorizontalBit(s, bit) {
+	for i := 1; i <= int(s.height); i++ {
+		if !hasValidCrossingsForHorizontalBit(s, bit) {
+			return false
+		}
+		if i <= int(s.width) &&
+			!hasValidCrossingsForVerticalBit(s, bit) {
 			return false
 		}
 		bit <<= 1
@@ -98,7 +105,7 @@ func hasValidCrossingsForVerticalBit(
 	bit model.DimensionBit,
 ) bool {
 	var l uint8
-	for i := 1; i <= int(s.size); i++ {
+	for i := 1; i <= int(s.height); i++ {
 		if s.horizontalLines[i]&bit == bit {
 			l++
 		} else if s.horizontalAvoids[i]&bit != bit {
@@ -113,7 +120,7 @@ func hasValidCrossingsForHorizontalBit(
 	bit model.DimensionBit,
 ) bool {
 	var l uint8
-	for i := 1; i <= int(s.size); i++ {
+	for i := 1; i <= int(s.width); i++ {
 		if s.verticalLines[i]&bit == bit {
 			l++
 		} else if s.verticalAvoids[i]&bit != bit {
@@ -127,8 +134,8 @@ func avoidAllUnknowns(
 	s *state,
 ) {
 	var col model.Dimension
-	for row := model.Dimension(1); row <= model.Dimension(s.size); row++ {
-		for col = model.Dimension(1); col <= model.Dimension(s.size); col++ {
+	for row := model.Dimension(1); row <= model.Dimension(s.height); row++ {
+		for col = model.Dimension(1); col <= model.Dimension(s.width); col++ {
 			if !s.horLineAt(row, col) {
 				s.avoidHor(row, col)
 			}
@@ -140,7 +147,7 @@ func avoidAllUnknowns(
 }
 
 func checkEntireRuleset(s *state) settledState {
-	max := model.Dimension(s.size + 1)
+	max := model.Dimension(s.height + 1)
 	maxBit := max.Bit()
 	var dim2 model.DimensionBit
 	for dim1 := model.Dimension(0); dim1 <= max; dim1++ {

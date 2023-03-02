@@ -14,9 +14,10 @@ const (
 type state struct {
 	rules ruleCheckCollector
 	nodes []model.Node
+	zeros []model.Node
 
-	size       model.Size
-	hasInvalid bool
+	width, height model.Size
+	hasInvalid    bool
 
 	paths pathCollector
 
@@ -32,24 +33,31 @@ type state struct {
 }
 
 func newState(
-	size model.Size,
+	width, height model.Size,
 	ns []model.Node,
 ) state {
-	r := newRules(size)
+	r := newRules(width, height)
 	rcc := newRuleCheckCollector(r)
 
 	s := state{
-		nodes:     make([]model.Node, len(ns)),
-		size:      size,
-		crossings: newCrossings(size),
+		nodes:     make([]model.Node, 0, len(ns)),
+		zeros:     make([]model.Node, 0, len(ns)),
+		width:     width,
+		height:    height,
+		crossings: newCrossings(width, height),
 		rules:     rcc,
 	}
 
 	// offset all of the input nodes by positive one
 	for i := range ns {
-		s.nodes[i] = ns[i]
-		s.nodes[i].Row++
-		s.nodes[i].Col++
+		n := ns[i]
+		n.Row++
+		n.Col++
+		if n.Num == 0 {
+			s.zeros = append(s.zeros, n)
+		} else {
+			s.nodes = append(s.nodes, n)
+		}
 	}
 	s.paths = newPathCollector(s.nodes)
 
@@ -65,15 +73,19 @@ func newState(
 }
 
 func (s *state) initialize() {
-	avoid := model.DimensionBit(1 | (1 << s.size))
-	for i := 1; i <= int(s.size); i++ {
-		s.verticalAvoids[i] |= avoid
-		s.horizontalAvoids[i] |= avoid
-	}
-	s.horizontalAvoids[0] = all64Bits
 	s.verticalAvoids[0] = all64Bits
-	s.horizontalAvoids[s.size+1] = all64Bits
-	s.verticalAvoids[s.size+1] = all64Bits
+	avoidVer := model.DimensionBit(1 | (1 << s.height))
+	for i := 1; i <= int(s.width); i++ {
+		s.verticalAvoids[i] |= avoidVer
+	}
+	s.verticalAvoids[s.width+1] = all64Bits
+
+	s.horizontalAvoids[0] = all64Bits
+	avoidHor := model.DimensionBit(1 | (1 << s.width))
+	for i := 1; i <= int(s.height); i++ {
+		s.horizontalAvoids[i] |= avoidHor
+	}
+	s.horizontalAvoids[s.height+1] = all64Bits
 
 	if checkEntireRuleset(s) == invalid {
 		fmt.Printf("Invalid State:\n%s\n", s)
@@ -83,12 +95,16 @@ func (s *state) initialize() {
 
 func (s *state) toSolution() model.Solution {
 	sol := model.Solution{
-		Size: s.size,
+		Height: s.height,
+		Width:  s.width,
 	}
 
 	// each line needs to be shifted by one.
-	for i := 0; i < int(s.size); i++ {
+	for i := 0; i < int(s.height); i++ {
 		sol.Horizontals[i] = (s.horizontalLines[i+1]) >> 1
+	}
+
+	for i := 0; i < int(s.width); i++ {
 		sol.Verticals[i] = (s.verticalLines[i+1]) >> 1
 	}
 
@@ -231,9 +247,9 @@ func (s *state) String() string {
 
 	var isLine, isAvoid bool
 
-	for r := 0; r <= int(s.size+1); r++ {
-		for c := 0; c <= int(s.size+1); c++ {
-			sb.WriteByte(s.getNode(model.Dimension(r), model.Dimension(c)))
+	for r := 0; r <= int(s.height+1); r++ {
+		for c := 0; c <= int(s.width+1); c++ {
+			sb.WriteByte(s.getDot(model.Dimension(r), model.Dimension(c)))
 			sb.WriteByte(' ')
 			isLine, isAvoid = s.horAt(model.Dimension(r), model.Dimension(c))
 			if isLine && isAvoid {
@@ -249,7 +265,7 @@ func (s *state) String() string {
 		}
 		sb.WriteByte('\n')
 
-		for c := 0; c <= int(s.size+1); c++ {
+		for c := 0; c <= int(s.width+1); c++ {
 			isLine, isAvoid = s.verAt(model.Dimension(r), model.Dimension(c))
 			if isLine && isAvoid {
 				sb.WriteByte(confusedSpace)
@@ -261,7 +277,7 @@ func (s *state) String() string {
 				sb.WriteByte(' ')
 			}
 			sb.WriteByte(' ')
-			sb.WriteByte(' ')
+			sb.WriteByte(s.getNode(model.Dimension(r), model.Dimension(c)))
 			sb.WriteByte(' ')
 		}
 		sb.WriteByte('\n')
@@ -277,13 +293,26 @@ func (s *state) getNode(r, c model.Dimension) byte {
 		}
 		return '0' + byte(n.Num)
 	}
+	for _, n := range s.zeros {
+		if n.Row != r || n.Col != c {
+			continue
+		}
+		return '0' + byte(n.Num)
+	}
+	// if r == 0 || c == 0 || r >= model.Dimension(s.height) || c >= model.Dimension(s.width) {
+	// 	return 'X'
+	// }
+	return ' '
+}
+
+func (s *state) getDot(r, c model.Dimension) byte {
 	if r == 0 {
 		return '0' + byte(c%10)
 	}
 	if c == 0 {
 		return '0' + byte(r%10)
 	}
-	if r > model.Dimension(s.size) || c > model.Dimension(s.size) {
+	if r > model.Dimension(s.height) || c > model.Dimension(s.width) {
 		return ' '
 	}
 	return '*'

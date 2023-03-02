@@ -14,14 +14,16 @@ type crossings struct {
 	rowsAvoid [maxPinsPerLine]model.Dimension
 
 	// This is the "target" for an _almost_ empty row/col
-	target model.Dimension
+	targetRow model.Dimension
+	targetCol model.Dimension
 }
 
 func newCrossings(
-	size model.Size,
+	width, height model.Size,
 ) crossings {
 	return crossings{
-		target: model.Dimension(size) - 1,
+		targetRow: model.Dimension(width) - 1,
+		targetCol: model.Dimension(height) - 1,
 	}
 }
 
@@ -33,7 +35,7 @@ func (c *crossings) lineHor(
 		return
 	}
 	c.cols[col]++
-	if c.colsAvoid[col]+c.cols[col] == c.target {
+	if c.colsAvoid[col]+c.cols[col] == c.targetRow {
 		c.completeCol(col, s)
 	}
 
@@ -47,7 +49,7 @@ func (c *crossings) avoidHor(
 		return
 	}
 	c.colsAvoid[col]++
-	if c.colsAvoid[col]+c.cols[col] == c.target {
+	if c.colsAvoid[col]+c.cols[col] == c.targetRow {
 		c.completeCol(col, s)
 	}
 }
@@ -72,7 +74,7 @@ func (c *crossings) lineVer(
 		return
 	}
 	c.rows[row]++
-	if c.rowsAvoid[row]+c.rows[row] == c.target {
+	if c.rowsAvoid[row]+c.rows[row] == c.targetCol {
 		c.completeRow(row, s)
 	}
 }
@@ -85,7 +87,7 @@ func (c *crossings) avoidVer(
 		return
 	}
 	c.rowsAvoid[row]++
-	if c.rowsAvoid[row]+c.rows[row] == c.target {
+	if c.rowsAvoid[row]+c.rows[row] == c.targetCol {
 		c.completeRow(row, s)
 	}
 }
@@ -106,7 +108,7 @@ func getEmptyCrossingInColumn(
 	s *state,
 	col model.Dimension,
 ) model.Dimension {
-	for row := model.Dimension(1); row <= model.Dimension(s.size); row++ {
+	for row := model.Dimension(1); row <= model.Dimension(s.height); row++ {
 		if !s.hasHorDefined(row, col) {
 			return row
 		}
@@ -118,7 +120,7 @@ func getEmptyCrossingInRow(
 	s *state,
 	row model.Dimension,
 ) model.Dimension {
-	for col := model.Dimension(1); col <= model.Dimension(s.size); col++ {
+	for col := model.Dimension(1); col <= model.Dimension(s.width); col++ {
 		if !s.hasVerDefined(row, col) {
 			return col
 		}

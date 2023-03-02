@@ -83,7 +83,8 @@ func getResults(
 
 		t0 := time.Now()
 		sol, err := solve.FromNodesWithTimeout(
-			iter.GetSize(),
+			iter.GetWidth(),
+			iter.GetHeight(),
 			ns,
 			timeout,
 		)

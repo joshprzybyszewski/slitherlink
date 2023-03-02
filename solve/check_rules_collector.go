@@ -46,7 +46,10 @@ func (c *ruleCheckCollector) runAllChecks(
 
 	var dim1, dim2 model.Dimension
 	var tmp model.DimensionBit
-	im := model.Dimension(int(s.size) + 2)
+	im := model.Dimension(int(s.height) + 2)
+	if im < model.Dimension(int(s.width)+2) {
+		im = model.Dimension(int(s.width) + 2)
+	}
 
 	for c.hasPending {
 		c.hasPending = false

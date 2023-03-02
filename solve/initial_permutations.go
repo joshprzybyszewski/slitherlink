@@ -117,7 +117,7 @@ func (pf *initialPermutations) buildColumn(
 		},
 	}
 
-	if a.numCrossings >= int(s.size)/2 {
+	if a.numCrossings >= int(s.height)/2 {
 		pf.buildColumn(s, col, a)
 		pf.buildColumn(s, col, l)
 	} else {
@@ -189,7 +189,7 @@ func (pf *initialPermutations) buildRow(
 		},
 	}
 
-	if a.numCrossings >= int(s.size)/2 {
+	if a.numCrossings >= int(s.width)/2 {
 		pf.buildRow(s, row, a)
 		pf.buildRow(s, row, l)
 	} else {
@@ -210,8 +210,8 @@ func (pf *initialPermutations) getBestNextStartingRow(
 	var numNodesInNumEmpty [maxPinsPerLine]int
 	var ne, nn int
 
-	for row := model.Dimension(1); row < model.Dimension(s.size); row++ {
-		ne = int(s.size) - int(s.crossings.rows[row]) - int(s.crossings.rowsAvoid[row])
+	for row := model.Dimension(1); row < model.Dimension(s.height); row++ {
+		ne = int(s.width) - int(s.crossings.rows[row]) - int(s.crossings.rowsAvoid[row])
 		nn = nodesInRow[row] + nodesInRow[row+1]
 		if rowByNumEmpty[ne] == 0 || nn > numNodesInNumEmpty[ne] {
 			rowByNumEmpty[ne] = row
@@ -234,8 +234,8 @@ func (pf *initialPermutations) getBestNextStartingCol(
 	var numNodesInNumEmpty [maxPinsPerLine]int
 	var ne, nn int
 
-	for col := model.Dimension(1); col < model.Dimension(s.size); col++ {
-		ne = int(s.size) - int(s.crossings.cols[col]) - int(s.crossings.colsAvoid[col])
+	for col := model.Dimension(1); col < model.Dimension(s.width); col++ {
+		ne = int(s.height) - int(s.crossings.cols[col]) - int(s.crossings.colsAvoid[col])
 		if colByNumEmpty[ne] == 0 || nn > numNodesInNumEmpty[ne] {
 			colByNumEmpty[ne] = col
 			numNodesInNumEmpty[ne] = nn
