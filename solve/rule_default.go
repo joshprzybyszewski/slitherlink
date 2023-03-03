@@ -82,7 +82,7 @@ func (r *rule) checkDefault(
 			l, a = s.horAt(r.row, r.col-1)
 			if l {
 				// !RIGHT + DOWN + LEFT
-				s.avoidVer(r.row-1, r.col)
+				s.avoidVer(r.row-1, r.col) //
 			} else if a {
 				// !RIGHT + DOWN + !LEFT
 				s.lineVer(r.row-1, r.col)

@@ -7,10 +7,6 @@ import (
 	"github.com/joshprzybyszewski/slitherlink/model"
 )
 
-var (
-	maxAttemptDuration = 5 * time.Second
-)
-
 func solveWithWorkforce(
 	s *state,
 	dur time.Duration,

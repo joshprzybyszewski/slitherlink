@@ -143,21 +143,22 @@ func avoidAllUnknowns(
 }
 
 func checkEntireRuleset(s *state) settledState {
-	max := model.Dimension(s.height + 1)
-	maxBit := max.Bit()
-	var dim2 model.DimensionBit
+	maxC := model.Dimension(s.width).Bit()
+	var c model.DimensionBit
 
-	// TODO
-	// for r := Dimension(0); r < Dimension(s.Height); r++ {
-	// 	for c := Dimension(0); c < Dimension(s.Width); c++ {
-	// 	}
-	// }
-	for dim1 := model.Dimension(0); dim1 <= max; dim1++ {
-		s.rules.checkHorizontal(dim1, 0)
-		s.rules.checkVertical(0, dim1)
-		for dim2 = 1; dim2 <= maxBit; dim2 <<= 1 {
-			s.rules.checkHorizontal(dim1, dim2)
-			s.rules.checkVertical(dim2, dim1)
+	for r := model.Dimension(0); r <= model.Dimension(s.height); r++ {
+		s.rules.checkHorizontal(r, 0)
+		for c = 1; c <= maxC; c <<= 1 {
+			s.rules.checkHorizontal(r, c)
+		}
+	}
+
+	maxR := model.Dimension(s.height).Bit()
+	var r model.DimensionBit
+	for c := model.Dimension(0); c <= model.Dimension(s.width); c++ {
+		s.rules.checkVertical(0, c)
+		for r = 1; r <= maxR; r <<= 1 {
+			s.rules.checkVertical(r, c)
 		}
 	}
 

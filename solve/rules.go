@@ -85,8 +85,8 @@ func (r *rules) populateRules(
 		}
 	}
 
-	for col := model.Dimension(1); col <= model.Dimension(s.height); col++ {
-		for row := model.Dimension(1); row < model.Dimension(s.width); row++ {
+	for col := model.Dimension(1); col <= model.Dimension(s.width); col++ {
+		for row := model.Dimension(1); row < model.Dimension(s.height); row++ {
 			r.addVerticalRule(row, col, &pins[row][col])
 			r.addVerticalRule(row, col, &pins[row+1][col])
 		}
@@ -94,7 +94,7 @@ func (r *rules) populateRules(
 
 	// TODO
 	// for a corner of a (3) node, if the other two are avoids, then that corner lines.
-	// if one side of a (3) node is a line, then so is the other side
+	// if one side of a (3) node is a line, then so is the opposite side
 }
 
 func (r *rules) populateUnknowns(

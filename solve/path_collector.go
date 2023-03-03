@@ -184,7 +184,7 @@ func (pc *pathCollector) add(
 				return
 			}
 			pc.hasCycle = true
-			pc.cycleSeen = l.nodePaths
+			pc.cycleSeen = l.nodePaths + pc.numNodes(mya, myb)
 			return
 		}
 

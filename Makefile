@@ -36,6 +36,6 @@ results: ## Runs the solver to update the reported results on the readme page
 
 .PHONY: lambda
 lambda: ## Builds the app so that we can serve it in a lambda
-	GOOS=linux CGO_ENABLED=0 go build -o slitherlink-lambda lambda/main.go
+	GOOS=linux CGO_ENABLED=0 go build -o slitherlink-lambda -tags=lambda lambda/main.go
 	zip slitherlink-lambda.zip slitherlink-lambda
 	rm slitherlink-lambda

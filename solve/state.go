@@ -2,6 +2,7 @@ package solve
 
 import (
 	"fmt"
+	"runtime/debug"
 	"strings"
 
 	"github.com/joshprzybyszewski/slitherlink/model"
@@ -158,10 +159,11 @@ func (s *state) avoidHor(r, c model.Dimension) {
 	s.horizontalAvoids[r] |= b
 	if s.horizontalLines[r]&s.horizontalAvoids[r] != 0 {
 		// invalid
-		// fmt.Printf("%s\n", debug.Stack())
+		fmt.Printf("avoidHor(%d, %d):\n%s\n", r, c, debug.Stack())
 		s.hasInvalid = true
 		return
 	}
+	fmt.Printf("avoidHor(%d, %d):\n%s\n", r, c, s)
 
 	s.rules.checkHorizontal(r, b)
 	s.crossings.avoidHor(c, s)
@@ -176,10 +178,11 @@ func (s *state) lineHor(r, c model.Dimension) {
 	s.horizontalLines[r] |= b
 	if s.horizontalLines[r]&s.horizontalAvoids[r] != 0 {
 		// invalid
-		// fmt.Printf("%s\n", debug.Stack())
+		fmt.Printf("lineHor(%d, %d):\n%s\n", r, c, debug.Stack())
 		s.hasInvalid = true
 		return
 	}
+	fmt.Printf("lineHor(%d, %d):\n%s\n", r, c, s)
 
 	s.rules.checkHorizontal(r, b)
 	s.crossings.lineHor(c, s)
@@ -211,10 +214,11 @@ func (s *state) avoidVer(r, c model.Dimension) {
 	s.verticalAvoids[c] |= b
 	if s.verticalLines[c]&s.verticalAvoids[c] != 0 {
 		// invalid
-		// fmt.Printf("%s\n", debug.Stack())
+		fmt.Printf("avoidVer(%d, %d):\n%s\n", r, c, debug.Stack())
 		s.hasInvalid = true
 		return
 	}
+	fmt.Printf("avoidVer(%d, %d):\n%s\n", r, c, s)
 
 	s.rules.checkVertical(b, c)
 	s.crossings.avoidVer(r, s)
@@ -229,10 +233,11 @@ func (s *state) lineVer(r, c model.Dimension) {
 	s.verticalLines[c] |= b
 	if s.verticalLines[c]&s.verticalAvoids[c] != 0 {
 		// invalid
-		// fmt.Printf("%s\n", debug.Stack())
+		fmt.Printf("lineVer(%d, %d):\n%s\n", r, c, debug.Stack())
 		s.hasInvalid = true
 		return
 	}
+	fmt.Printf("lineVer(%d, %d):\n%s\n", r, c, s)
 
 	s.rules.checkVertical(b, c)
 	s.crossings.lineVer(r, s)

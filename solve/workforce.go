@@ -11,11 +11,6 @@ import (
 	"github.com/joshprzybyszewski/slitherlink/model"
 )
 
-const (
-	numWorkers = 1
-	// numWorkers = 4
-)
-
 type workforce struct {
 	solution chan model.Solution
 
