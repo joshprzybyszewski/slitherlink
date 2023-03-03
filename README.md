@@ -7,7 +7,7 @@ To run, execute `make compete`.
 
 ## Results
 
-Check the [Hall of Fame](www.puzzle-loop.com/hall.php?hallsize=18) for the results recorded by the puzzle server (which include network duration of submission). Below are the results of the solver as recorded on my machine.
+Check the [Hall of Fame](www.puzzle-loop.com/hall.php?hallsize=9) for the results recorded by the puzzle server (which include network duration of submission). Below are the results of the solver as recorded on my machine.
 
 _NOTE: Update this table with `make results`._
 
@@ -23,25 +23,18 @@ _Solve timeout: 1m30s_
 
 |Puzzle|Min|p25|Median|p75|p95|max|sample size|
 |-|-|-|-|-|-|-|-:|
-|6x6 easy|231.39µs|444.33µs|482.68µs|530.3µs|625.59µs|1.53ms|383|
-|8x8 easy|274.01µs|552µs|605.12µs|667.2µs|1.59ms|1.84ms|348|
-|8x8 medium|304.81µs|560.37µs|823.12µs|1.51ms|1.81ms|2.34ms|325|
-|8x8 hard|507.58µs|1.47ms|1.63ms|1.81ms|2.11ms|3.28ms|308|
-|10x10 easy|319.74µs|675.88µs|800.63µs|1.02ms|1.9ms|2.73ms|300|
-|10x10 medium|320.38µs|1.01ms|1.58ms|1.88ms|2.44ms|6.47ms|280|
-|10x10 hard|992.85µs|1.77ms|2.03ms|2.39ms|3.29ms|6.66ms|261|
-|15x15 easy|711.4µs|1.44ms|2.08ms|2.62ms|3.16ms|5.69ms|241|
-|15x15 medium|1.3ms|2.68ms|3.18ms|3.94ms|7.95ms|17.21ms|191|
-|15x15 hard|2.04ms|4.34ms|6.96ms|14.04ms|70.01ms|276.31ms|147|
-|20x20 easy|1.81ms|3.19ms|3.78ms|4.27ms|5.29ms|8.7ms|183|
-|20x20 medium|2.02ms|4.73ms|7ms|13.17ms|80.64ms|14.04s|152|
-|20x20 hard|3.87ms|27.67ms|114.93ms|329.73ms|11.31s|1m30.01s|128|
-|30x30 hard|30.08ms|30.08ms|30.08ms|30.08ms|30.08ms|30.08ms|1|
-|35x35 hard|122.07ms|122.07ms|122.07ms|122.07ms|122.07ms|122.07ms|1|
-|40x40 hard|774.48ms|774.48ms|774.48ms|774.48ms|774.48ms|774.48ms|1|
-|25x25 easy|2.65ms|4.47ms|5.18ms|5.8ms|8.76ms|106.99ms|131|
-|25x25 medium|4.9ms|11.93ms|28.28ms|109.8ms|852.88ms|10.06s|109|
-|25x25 hard|7.1ms|188.9ms|1.9s|43.47s|1m30.01s|1m30.01s|103|
+|5x5 medium|174.78µs|350.61µs|368.93µs|398.69µs|513.47µs|513.47µs|15|
+|10x10 medium|300.12µs|454.08µs|496.29µs|555.11µs|590.59µs|590.59µs|10|
+|15x15 medium|624.29µs|735.09µs|756.03µs|768.87µs|886.87µs|886.87µs|10|
+|20x20 medium|1.07ms|1.2ms|1.26ms|1.38ms|1.57ms|1.57ms|7|
+|5x5 hard|868.12µs|1.06ms|1.15ms|1.25ms|1.65ms|1.65ms|15|
+|10x10 hard|1.07ms|2.79ms|4.67ms|12.16ms|69.36ms|69.36ms|14|
+|15x15 hard|2.64ms|28.09ms|291.56ms|2.63s|5.01s|5.01s|14|
+|20x20 hard|170.03ms|1.36s|3.22s|5.01s|5.01s|5.01s|12|
+|25x30 medium|815.76µs|815.76µs|1.44ms|1.44ms|1.44ms|1.44ms|2|
+|25x30 hard|3.67s|5s|5s|5s|5s|5s|6|
+|7x7 medium|109.17µs|177.79µs|222.43µs|249.14µs|251.07µs|251.07µs|7|
+|7x7 hard|960.27µs|1.19ms|1.9ms|2.36ms|5.1ms|5.1ms|11|
 
-_Last Updated: 31 Jan 23 14:18 CST_
+_Last Updated: 03 Mar 23 07:32 CST_
 </resultsMarker>

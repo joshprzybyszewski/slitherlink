@@ -166,7 +166,6 @@ func (pc *pathCollector) add(
 		}
 
 		p.nodePaths += pc.numNodes(mya, myb)
-		// fmt.Printf("empty: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 
 		pc.pairs[mya.Row][mya.Col] = p
 		pc.pairs[myb.Row][myb.Col] = p
@@ -191,7 +190,6 @@ func (pc *pathCollector) add(
 		p := l
 		p.nodePaths += r.nodePaths
 		p.nodePaths += pc.numNodes(mya, myb)
-		// fmt.Printf("both: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 		if p.a == mya {
 			if r.a == myb {
 				p.a = r.b
@@ -217,7 +215,6 @@ func (pc *pathCollector) add(
 	if !l.isEmpty() {
 		p := l
 		p.nodePaths += pc.numNodes(mya, myb)
-		// fmt.Printf("l: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 		pc.pairs[mya.Row][mya.Col] = newEmptyPair()
 		if p.a == mya {
 			p.a = myb
@@ -236,7 +233,6 @@ func (pc *pathCollector) add(
 
 	p := r
 	p.nodePaths += pc.numNodes(mya, myb)
-	// fmt.Printf("r: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 	pc.pairs[myb.Row][myb.Col] = newEmptyPair()
 	if p.a == myb {
 		p.a = mya
@@ -280,7 +276,6 @@ func (pc *pathCollector) checkNewPair(
 
 	// only need to check the state when we're about to write a line.
 	// re-writing an avoid is no problem.
-	// fmt.Printf("%d / %d\n", p.nodePaths, pc.cycleTarget)
 	if p.nodePaths >= pc.cycleTarget-3 {
 		cpy := *s
 		if h {
