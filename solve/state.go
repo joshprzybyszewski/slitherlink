@@ -158,6 +158,7 @@ func (s *state) avoidHor(r, c model.Dimension) {
 	s.horizontalAvoids[r] |= b
 	if s.horizontalLines[r]&s.horizontalAvoids[r] != 0 {
 		// invalid
+		// fmt.Printf("%s\n", debug.Stack())
 		s.hasInvalid = true
 		return
 	}
@@ -175,6 +176,7 @@ func (s *state) lineHor(r, c model.Dimension) {
 	s.horizontalLines[r] |= b
 	if s.horizontalLines[r]&s.horizontalAvoids[r] != 0 {
 		// invalid
+		// fmt.Printf("%s\n", debug.Stack())
 		s.hasInvalid = true
 		return
 	}
@@ -209,6 +211,7 @@ func (s *state) avoidVer(r, c model.Dimension) {
 	s.verticalAvoids[c] |= b
 	if s.verticalLines[c]&s.verticalAvoids[c] != 0 {
 		// invalid
+		// fmt.Printf("%s\n", debug.Stack())
 		s.hasInvalid = true
 		return
 	}
@@ -226,6 +229,7 @@ func (s *state) lineVer(r, c model.Dimension) {
 	s.verticalLines[c] |= b
 	if s.verticalLines[c]&s.verticalAvoids[c] != 0 {
 		// invalid
+		// fmt.Printf("%s\n", debug.Stack())
 		s.hasInvalid = true
 		return
 	}

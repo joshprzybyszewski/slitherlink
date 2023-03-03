@@ -8,7 +8,7 @@ type pair struct {
 	a model.Coord
 	b model.Coord
 
-	numSeenNodes int
+	nodePaths int
 }
 
 func newEmptyPair() pair {
@@ -34,8 +34,10 @@ type pathCollector struct {
 
 	nodes [maxPinsPerLine]model.DimensionBit
 
-	hasCycle       bool
-	cycleSeenNodes int
+	hasCycle bool
+
+	cycleSeen   int
+	cycleTarget int
 }
 
 func newPathCollector(
@@ -45,6 +47,7 @@ func newPathCollector(
 
 	for _, n := range nodes {
 		pc.nodes[n.Row] |= n.Col.Bit()
+		pc.cycleTarget += n.Num
 	}
 
 	return pc
@@ -78,10 +81,38 @@ func (pc *pathCollector) getInteresting(
 	return c, false, false
 }
 
-func (pc *pathCollector) isNode(
-	c model.Coord,
-) bool {
-	return pc.nodes[c.Row]&(c.Col.Bit()) != 0
+func (pc *pathCollector) numNodes(
+	a model.Coord,
+	b model.Coord,
+) int {
+	n := 0
+
+	c1 := a
+	var c2 model.Coord
+
+	if b.Row < c1.Row {
+		c1 = b
+		c2 = c1
+		c2.Col--
+	} else if b.Col < c1.Col {
+		c1 = b
+		c2 = c1
+		c2.Row--
+	} else if a.Col == b.Col {
+		c2 = c1
+		c2.Col--
+	} else if a.Row == b.Row {
+		c2 = c1
+		c2.Row--
+	}
+
+	if pc.nodes[c1.Row]&(c1.Col.Bit()) != 0 {
+		n++
+	}
+	if pc.nodes[c2.Row]&(c2.Col.Bit()) != 0 {
+		n++
+	}
+	return n
 }
 
 func (pc *pathCollector) addHorizontal(
@@ -134,12 +165,8 @@ func (pc *pathCollector) add(
 			b: myb,
 		}
 
-		if pc.isNode(mya) {
-			p.numSeenNodes++
-		}
-		if pc.isNode(myb) {
-			p.numSeenNodes++
-		}
+		p.nodePaths += pc.numNodes(mya, myb)
+		// fmt.Printf("empty: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 
 		pc.pairs[mya.Row][mya.Col] = p
 		pc.pairs[myb.Row][myb.Col] = p
@@ -153,16 +180,18 @@ func (pc *pathCollector) add(
 		if l == r {
 			if pc.hasCycle {
 				// a second cycle? this is bad news.
-				pc.cycleSeenNodes = -1
+				pc.cycleSeen = -1
 				return
 			}
 			pc.hasCycle = true
-			pc.cycleSeenNodes = l.numSeenNodes
+			pc.cycleSeen = l.nodePaths
 			return
 		}
 
 		p := l
-		p.numSeenNodes += r.numSeenNodes
+		p.nodePaths += r.nodePaths
+		p.nodePaths += pc.numNodes(mya, myb)
+		// fmt.Printf("both: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 		if p.a == mya {
 			if r.a == myb {
 				p.a = r.b
@@ -187,9 +216,8 @@ func (pc *pathCollector) add(
 
 	if !l.isEmpty() {
 		p := l
-		if pc.isNode(myb) {
-			p.numSeenNodes++
-		}
+		p.nodePaths += pc.numNodes(mya, myb)
+		// fmt.Printf("l: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 		pc.pairs[mya.Row][mya.Col] = newEmptyPair()
 		if p.a == mya {
 			p.a = myb
@@ -207,9 +235,8 @@ func (pc *pathCollector) add(
 	}
 
 	p := r
-	if pc.isNode(mya) {
-		p.numSeenNodes++
-	}
+	p.nodePaths += pc.numNodes(mya, myb)
+	// fmt.Printf("r: %d / %d\n%s\n", p.nodePaths, pc.cycleTarget, s)
 	pc.pairs[myb.Row][myb.Col] = newEmptyPair()
 	if p.a == myb {
 		p.a = mya
@@ -253,7 +280,8 @@ func (pc *pathCollector) checkNewPair(
 
 	// only need to check the state when we're about to write a line.
 	// re-writing an avoid is no problem.
-	if p.numSeenNodes == len(s.nodes) {
+	// fmt.Printf("%d / %d\n", p.nodePaths, pc.cycleTarget)
+	if p.nodePaths >= pc.cycleTarget-3 {
 		cpy := *s
 		if h {
 			if !cpy.horAvoidAt(r, c) {

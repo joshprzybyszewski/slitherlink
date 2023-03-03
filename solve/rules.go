@@ -72,8 +72,8 @@ func (r *rules) populateRules(
 	}
 
 	var pins [maxPinsPerLine][maxPinsPerLine]rule
-	for row := model.Dimension(1); row <= model.Dimension(s.height); row++ {
-		for col := model.Dimension(1); col <= model.Dimension(s.width); col++ {
+	for row := model.Dimension(1); row <= model.Dimension(s.height)+1; row++ {
+		for col := model.Dimension(1); col <= model.Dimension(s.width)+1; col++ {
 			pins[row][col] = newDefaultRule(row, col)
 		}
 	}
@@ -191,6 +191,9 @@ func (r *rules) addHorizontalRule(
 	row, col model.Dimension,
 	rule *rule,
 ) {
+	if rule == nil || rule.check == nil {
+		panic(`ahh`)
+	}
 
 	r.horizontals[row][col].affects += rule.affects
 	prev := r.horizontals[row][col].fn
@@ -206,6 +209,10 @@ func (r *rules) addVerticalRule(
 	row, col model.Dimension,
 	rule *rule,
 ) {
+	if rule == nil || rule.check == nil {
+		panic(`ahh`)
+	}
+
 	r.verticals[row][col].affects += rule.affects
 	prev := r.verticals[row][col].fn
 	r.verticals[row][col].fn = func(s *state) {

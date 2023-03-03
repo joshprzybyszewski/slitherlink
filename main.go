@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"runtime"
+	"runtime/debug"
 	"time"
 
 	"github.com/joshprzybyszewski/slitherlink/fetch"
@@ -65,6 +66,12 @@ func main() {
 }
 
 func compete(iter model.Iterator) error {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Printf("Caught: %+v\n%s\n", r, debug.Stack())
+		}
+	}()
 
 	fmt.Printf("Starting %s\n\t%s\n\n\n", iter, time.Now())
 	input, err := fetch.Puzzle(iter)

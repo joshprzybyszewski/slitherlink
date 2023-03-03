@@ -12,5 +12,5 @@ func findGimmes(
 	}
 
 	// TODO
-	// gimmes: three (3) nodes in a row => the between-ers are lines
+	// gimmes: two (3) nodes in a row => the between-er is a line
 }

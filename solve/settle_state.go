@@ -1,8 +1,6 @@
 package solve
 
 import (
-	"fmt"
-
 	"github.com/joshprzybyszewski/slitherlink/model"
 )
 
@@ -19,8 +17,6 @@ const (
 func settle(
 	s *state,
 ) settledState {
-	fmt.Printf("settle:\n%s\n", s)
-
 	if s.hasInvalid {
 		return invalid
 	}
@@ -53,7 +49,7 @@ func settleCycle(
 		return unexpected
 	}
 
-	if s.paths.cycleSeenNodes != len(s.nodes) {
+	if s.paths.cycleSeen != s.paths.cycleTarget {
 		// there's a cycle, but it doesn't include all of the nodes.
 		return invalid
 	}
@@ -77,7 +73,7 @@ func settleCycle(
 	}
 
 	// re-validate our assumptions after checking all the rules
-	if s.hasInvalid || s.paths.cycleSeenNodes != len(s.nodes) {
+	if s.hasInvalid || s.paths.cycleSeen != s.paths.cycleTarget {
 		return invalid
 	}
 
@@ -150,6 +146,12 @@ func checkEntireRuleset(s *state) settledState {
 	max := model.Dimension(s.height + 1)
 	maxBit := max.Bit()
 	var dim2 model.DimensionBit
+
+	// TODO
+	// for r := Dimension(0); r < Dimension(s.Height); r++ {
+	// 	for c := Dimension(0); c < Dimension(s.Width); c++ {
+	// 	}
+	// }
 	for dim1 := model.Dimension(0); dim1 <= max; dim1++ {
 		s.rules.checkHorizontal(dim1, 0)
 		s.rules.checkVertical(0, dim1)

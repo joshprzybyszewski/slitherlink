@@ -118,6 +118,10 @@ func (r *rule) checkTwo(
 		// all set
 		return
 	}
+	if na > 2 {
+		r.setInvalid(s)
+		return
+	}
 	if nl != 2 && na != 2 {
 		// we don't know enough to complete the square
 		return

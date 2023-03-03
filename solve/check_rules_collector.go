@@ -40,7 +40,7 @@ func (c *ruleCheckCollector) checkVertical(
 func (c *ruleCheckCollector) runAllChecks(
 	s *state,
 ) settledState {
-	if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeenNodes != len(s.nodes)) {
+	if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeen != s.paths.cycleTarget) {
 		return invalid
 	}
 
@@ -76,17 +76,17 @@ func (c *ruleCheckCollector) runAllChecks(
 					tmp >>= 1
 				}
 			}
-			if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeenNodes != len(s.nodes)) {
+			if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeen != s.paths.cycleTarget) {
 				return invalid
 			}
 		}
 
-		if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeenNodes != len(s.nodes)) {
+		if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeen != s.paths.cycleTarget) {
 			return invalid
 		}
 	}
 
-	if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeenNodes != len(s.nodes)) {
+	if s.hasInvalid || (s.paths.hasCycle && s.paths.cycleSeen != s.paths.cycleTarget) {
 		return invalid
 	}
 

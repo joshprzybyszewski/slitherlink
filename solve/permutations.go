@@ -40,7 +40,7 @@ func (pf *permutationsFactory) save(
 func (pf *permutationsFactory) hasRoomForNumEmpty(
 	numEmpty int,
 ) bool {
-	if numEmpty == 0 || numEmpty > 0 { // TODO remove the numEmpty > 0 because i'm paranoid rn
+	if numEmpty == 0 { // TODO remove the numEmpty > 0 because i'm paranoid rn
 		return false
 	}
 	numPerms := 1 << (numEmpty - 1)

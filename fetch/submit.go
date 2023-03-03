@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/joshprzybyszewski/slitherlink/model"
@@ -23,19 +22,13 @@ func Submit(
 		return nil
 	}
 
-	t0 := time.Now()
 	header := buildHeader()
 	data := buildSubmissionData(input, sol, header)
-	t1 := time.Now()
 
 	resp, err := post(baseURL, header, data)
 	if err != nil {
 		return err
 	}
-	t2 := time.Now()
-
-	fmt.Printf("building submission: %s\n", t1.Sub(t0))
-	fmt.Printf("posting submission: %s\n", t2.Sub(t1))
 
 	header = buildHeader()
 	data, err = buildHallOfFameSubmission(resp, header)

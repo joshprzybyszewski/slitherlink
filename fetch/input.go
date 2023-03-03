@@ -30,8 +30,7 @@ func (i input) Task() string {
 
 func (i input) ToNodes() []model.Node {
 	var r, c model.Dimension
-	// maxR := model.Dimension(i.iter.GetHeight())
-	maxC := model.Dimension(i.iter.GetWidth())
+	maxC := model.Dimension(i.iter.GetWidth() - 1)
 	output := make([]model.Node, 0, len(i.task)/2)
 
 	for _, b := range i.task {
