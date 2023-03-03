@@ -71,7 +71,7 @@ func (r *rules) populateRules(
 		r.addVerticalRule(s.nodes[i].Row, s.nodes[i].Col+1, &nr)
 	}
 
-	var pins [maxPinsPerLine][maxPinsPerLine]rule
+	var pins [maxPinsPerLine + 2][maxPinsPerLine + 2]rule
 	for row := model.Dimension(1); row <= model.Dimension(s.height)+1; row++ {
 		for col := model.Dimension(1); col <= model.Dimension(s.width)+1; col++ {
 			pins[row][col] = newDefaultRule(row, col)

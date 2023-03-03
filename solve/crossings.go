@@ -35,7 +35,7 @@ func (c *crossings) lineHor(
 		return
 	}
 	c.cols[col]++
-	if c.colsAvoid[col]+c.cols[col] == c.targetRow {
+	if c.colsAvoid[col]+c.cols[col] == c.targetCol {
 		c.completeCol(col, s)
 	}
 
@@ -49,7 +49,7 @@ func (c *crossings) avoidHor(
 		return
 	}
 	c.colsAvoid[col]++
-	if c.colsAvoid[col]+c.cols[col] == c.targetRow {
+	if c.colsAvoid[col]+c.cols[col] == c.targetCol {
 		c.completeCol(col, s)
 	}
 }
@@ -74,7 +74,7 @@ func (c *crossings) lineVer(
 		return
 	}
 	c.rows[row]++
-	if c.rowsAvoid[row]+c.rows[row] == c.targetCol {
+	if c.rowsAvoid[row]+c.rows[row] == c.targetRow {
 		c.completeRow(row, s)
 	}
 }
@@ -87,7 +87,7 @@ func (c *crossings) avoidVer(
 		return
 	}
 	c.rowsAvoid[row]++
-	if c.rowsAvoid[row]+c.rows[row] == c.targetCol {
+	if c.rowsAvoid[row]+c.rows[row] == c.targetRow {
 		c.completeRow(row, s)
 	}
 }

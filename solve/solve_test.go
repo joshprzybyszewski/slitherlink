@@ -20,8 +20,8 @@ func TestSpecifics(t *testing.T) {
 		id   string
 		iter model.Iterator
 	}{{
-		iter: 0,
-		id:   `7,272,378`,
+		iter: 8,
+		id:   `7,437,536`,
 	}}
 
 	for _, tc := range testCases {
