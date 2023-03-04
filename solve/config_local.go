@@ -10,5 +10,5 @@ const (
 )
 
 var (
-	maxAttemptDuration = 10 * time.Second
+	maxAttemptDuration = 5 * time.Second
 )
