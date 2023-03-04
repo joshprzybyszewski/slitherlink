@@ -7,7 +7,7 @@ To run, execute `make compete`.
 
 ## Results
 
-Check the [Hall of Fame](www.puzzle-loop.com/hall.php?hallsize=9) for the results recorded by the puzzle server (which include network duration of submission). Below are the results of the solver as recorded on my machine.
+Check the [Hall of Fame](https://www.puzzle-loop.com/hall.php?hallsize=9) for the results recorded by the puzzle server (which include network duration of submission). Below are the results of the solver as recorded on my machine.
 
 _NOTE: Update this table with `make results`._
 
