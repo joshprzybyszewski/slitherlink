@@ -5,8 +5,8 @@ package solve
 import "time"
 
 const (
-	numWorkers = 1
-	// numWorkers = 4
+	// numWorkers = 1
+	numWorkers = 4
 )
 
 var (
