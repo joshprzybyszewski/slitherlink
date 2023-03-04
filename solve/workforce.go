@@ -137,7 +137,11 @@ func (w *workforce) sendWork(
 
 	w.work <- initial
 	if len(w.workers) == 1 {
-		panic(`initial state should have been solved!`)
+		// if there is only one worker, then we _need_ the initial state to be solved.
+		select {
+		case <-ctx.Done():
+			return
+		}
 	}
 
 	pf := newInitialPermutations()
