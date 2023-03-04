@@ -136,6 +136,9 @@ func (w *workforce) sendWork(
 	}
 
 	w.work <- initial
+	if len(w.workers) == 1 {
+		panic(`initial state should have been solved!`)
+	}
 
 	pf := newInitialPermutations()
 	pf.populate(&initial)

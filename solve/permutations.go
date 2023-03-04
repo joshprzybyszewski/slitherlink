@@ -277,7 +277,6 @@ func (pf *permutationsFactory) populateNextNode(
 	}
 	if node.Row == 0 {
 		// did not find an unsolved node
-		fmt.Printf("did not find unsolved node:\n%s\n", s)
 		return
 	}
 
@@ -379,7 +378,7 @@ func (pf *permutationsFactory) populateNextNode(
 		pf.save(func(s *state) {
 			s.avoidHor(node.Row, node.Col)
 			s.avoidVer(node.Row, node.Col)
-			s.lineVer(node.Row+1, node.Col)
+			s.lineHor(node.Row+1, node.Col)
 			s.lineVer(node.Row, node.Col+1)
 		})
 	}
@@ -389,23 +388,10 @@ func isNodeSolved(
 	s *state,
 	n model.Node,
 ) bool {
-	if !s.hasHorDefined(n.Row, n.Col) {
-		return false
-	}
-
-	if !s.hasVerDefined(n.Row, n.Col) {
-		return false
-	}
-
-	if !s.hasHorDefined(n.Row+1, n.Col) {
-		return false
-	}
-
-	if !s.hasVerDefined(n.Row, n.Col+1) {
-		return false
-	}
-
-	return true
+	return s.hasHorDefined(n.Row, n.Col) &&
+		s.hasVerDefined(n.Row, n.Col) &&
+		s.hasHorDefined(n.Row+1, n.Col) &&
+		s.hasVerDefined(n.Row, n.Col+1)
 }
 
 func (pf *permutationsFactory) buildSimple(

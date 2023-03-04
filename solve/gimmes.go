@@ -1,6 +1,8 @@
 package solve
 
-import "github.com/joshprzybyszewski/slitherlink/model"
+import (
+	"github.com/joshprzybyszewski/slitherlink/model"
+)
 
 func findGimmes(
 	s *state,
