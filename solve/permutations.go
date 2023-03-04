@@ -276,6 +276,7 @@ func (pf *permutationsFactory) populateNextNode(
 				unsolved[0] = n
 				break
 			}
+			continue
 		}
 		if unsolved[n.Num].Row == 0 && !isNodeSolved(s, n) {
 			unsolved[n.Num] = n
