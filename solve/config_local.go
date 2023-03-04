@@ -5,10 +5,10 @@ package solve
 import "time"
 
 const (
-	// numWorkers = 1
-	numWorkers = 4
+	numWorkers = 1
+	// numWorkers = 4
 )
 
 var (
-	maxAttemptDuration = time.Second
+	maxAttemptDuration = 10 * time.Second
 )
