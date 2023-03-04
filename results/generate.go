@@ -24,7 +24,7 @@ const (
 )
 
 const (
-	resultsTimeout = 90 * time.Second
+	resultsTimeout = 10 * time.Second
 )
 
 func Update() {
