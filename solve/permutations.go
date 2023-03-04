@@ -268,16 +268,29 @@ func (pf *permutationsFactory) populateNextNode(
 		return
 	}
 
-	var node model.Node
+	// solve threes first, then ones, then twos.
+	var unsolved [3]model.Node
 	for _, n := range s.nodes {
 		if !isNodeSolved(s, n) {
-			node = n
-			break
+			if n.Num == 3 {
+				unsolved[0] = n
+				break
+			}
+			if unsolved[n.Num].Row == 0 {
+				unsolved[n.Num] = n
+			}
 		}
 	}
+	node := unsolved[0]
 	if node.Row == 0 {
-		// did not find an unsolved node
-		return
+		node = unsolved[1]
+		if node.Row == 0 {
+			node = unsolved[2]
+			if node.Row == 0 {
+				// did not find an unsolved node
+				return
+			}
+		}
 	}
 
 	if node.Num == 3 {
