@@ -1,3 +1,5 @@
+//go:build lambda
+
 package main
 
 import (
@@ -13,17 +15,26 @@ import (
 
 func main() {
 	iterStr := os.Getenv(`ITER`)
-	if iterStr == `` {
-		panic(`ITER not set`)
-	}
-	val, err := strconv.Atoi(iterStr)
-	if err != nil {
-		panic(err)
+	if iterStr != `` {
+		val, err := strconv.Atoi(iterStr)
+		if err != nil {
+			panic(err)
+		}
+		err = compete(model.Iterator(val))
+		if err != nil {
+			fmt.Printf("Error: %+v\n", err)
+		}
+		fmt.Printf("Success!\n")
+		os.Exit(0)
 	}
 
-	err = compete(model.Iterator(val))
-	if err != nil {
-		fmt.Printf("Error: %+v\n", err)
+	var err error
+
+	for iter := model.MinIterator; iter <= model.MaxIterator; iter++ {
+		err = compete(iter)
+		if err != nil {
+			fmt.Printf("Error: %+v\n", err)
+		}
 	}
 
 	fmt.Printf("Success!\n")
@@ -42,7 +53,8 @@ func compete(iter model.Iterator) error {
 
 	t0 := time.Now()
 	sol, err := solve.FromNodes(
-		iter.GetSize(),
+		iter.GetWidth(),
+		iter.GetHeight(),
 		ns,
 	)
 	defer func(dur time.Duration) {

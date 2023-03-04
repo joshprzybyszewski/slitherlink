@@ -104,22 +104,34 @@ func (r *rule) checkTwo(
 	l, a = s.horAt(r.row+1, r.col)
 	if l {
 		nl++
+		if nl > 2 {
+			r.setInvalid(s)
+			return
+		}
 	} else if a {
 		na++
+		if na > 2 {
+			r.setInvalid(s)
+			return
+		}
 	}
 	l, a = s.verAt(r.row, r.col+1)
 	if l {
 		nl++
+		if nl > 2 {
+			r.setInvalid(s)
+			return
+		}
 	} else if a {
 		na++
+		if na > 2 {
+			r.setInvalid(s)
+			return
+		}
 	}
 
 	if nl+na == 4 {
 		// all set
-		return
-	}
-	if na > 2 {
-		r.setInvalid(s)
 		return
 	}
 	if nl != 2 && na != 2 {

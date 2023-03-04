@@ -69,6 +69,10 @@ func (r *rules) populateRules(
 		r.addHorizontalRule(s.nodes[i].Row+1, s.nodes[i].Col, &nr)
 		r.addVerticalRule(s.nodes[i].Row, s.nodes[i].Col, &nr)
 		r.addVerticalRule(s.nodes[i].Row, s.nodes[i].Col+1, &nr)
+
+		if s.nodes[i].Num == 3 {
+			r.addThreeRules(s.nodes[i])
+		}
 	}
 
 	var pins [maxPinsPerLine + 2][maxPinsPerLine + 2]rule
@@ -94,7 +98,6 @@ func (r *rules) populateRules(
 
 	// TODO
 	// for a corner of a (3) node, if the other two are avoids, then that corner lines.
-	// if one side of a (3) node is a line, then so is the opposite side
 }
 
 func (r *rules) populateUnknowns(
@@ -221,4 +224,36 @@ func (r *rules) addVerticalRule(
 			prev(s)
 		}
 	}
+}
+
+func (r *rules) addThreeRules(
+	n model.Node,
+) {
+	if n.Num != 3 {
+		return
+	}
+
+	ul := new3UpperLeftRule(n.Row, n.Col)
+	r.addHorizontalRule(n.Row, n.Col-1, &ul)
+	r.addHorizontalRule(n.Row, n.Col, &ul)
+	r.addVerticalRule(n.Row-1, n.Col, &ul)
+	r.addVerticalRule(n.Row, n.Col, &ul)
+
+	ur := new3UpperRightRule(n.Row, n.Col+1)
+	r.addHorizontalRule(n.Row, n.Col, &ur)
+	r.addHorizontalRule(n.Row, n.Col+1, &ur)
+	r.addVerticalRule(n.Row-1, n.Col+1, &ur)
+	r.addVerticalRule(n.Row, n.Col+1, &ur)
+
+	lr := new3LowerRightRule(n.Row+1, n.Col+1)
+	r.addHorizontalRule(n.Row+1, n.Col, &lr)
+	r.addHorizontalRule(n.Row+1, n.Col+1, &lr)
+	r.addVerticalRule(n.Row, n.Col+1, &lr)
+	r.addVerticalRule(n.Row+1, n.Col+1, &lr)
+
+	ll := new3LowerLeftRule(n.Row+1, n.Col)
+	r.addHorizontalRule(n.Row+1, n.Col-1, &ll)
+	r.addHorizontalRule(n.Row+1, n.Col, &ll)
+	r.addVerticalRule(n.Row, n.Col, &ll)
+	r.addVerticalRule(n.Row+1, n.Col+1, &ll)
 }

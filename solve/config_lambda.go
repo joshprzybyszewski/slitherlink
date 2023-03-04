@@ -2,6 +2,8 @@
 
 package solve
 
+import "time"
+
 const (
 	numWorkers = 6
 )
