@@ -1,14 +1,8 @@
-//go:build !lambda
+//go:build !deployed
 
 package solve
-
-import "time"
 
 const (
 	// numWorkers = 1
 	numWorkers = 4
-)
-
-var (
-	maxAttemptDuration = 15 * time.Second
 )

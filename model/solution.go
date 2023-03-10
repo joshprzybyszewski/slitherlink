@@ -87,37 +87,3 @@ func getNodeChar(
 	}
 	return ' '
 }
-
-func (s *Solution) ToAnswer() string {
-	if s == nil || s.Width == 0 || s.Height == 0 {
-		return ``
-	}
-
-	numRows := int(s.Height) - 1
-	numCols := int(s.Width) - 1
-	var rows, cols strings.Builder
-	rows.Grow(numRows * (numCols - 1))
-	cols.Grow((numRows - 1) * numCols)
-
-	for row := Dimension(0); row <= Dimension(numRows); row++ {
-		for col := Dimension(0); col < Dimension(numCols); col++ {
-			if s.Horizontals[row]&col.Bit() != 0 {
-				_ = rows.WriteByte('y')
-			} else {
-				_ = rows.WriteByte('n')
-			}
-		}
-	}
-
-	for row := Dimension(0); row < Dimension(numRows); row++ {
-		for col := Dimension(0); col <= Dimension(numCols); col++ {
-			if s.Verticals[col]&row.Bit() != 0 {
-				_ = cols.WriteByte('y')
-			} else {
-				_ = cols.WriteByte('n')
-			}
-		}
-	}
-
-	return rows.String() + cols.String()
-}

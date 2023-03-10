@@ -10,17 +10,6 @@ import (
 func FromNodes(
 	width, height model.Size,
 	ns []model.Node,
-) (model.Solution, error) {
-	return FromNodesWithTimeout(
-		width, height,
-		ns,
-		maxAttemptDuration,
-	)
-}
-
-func FromNodesWithTimeout(
-	width, height model.Size,
-	ns []model.Node,
 	dur time.Duration,
 ) (model.Solution, error) {
 
